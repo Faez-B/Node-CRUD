@@ -2,6 +2,9 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
+// const memoryDb = require("./db");
+
+
 const memoryDb = new Map(); // est global
 let id = 0; // doit être global
 memoryDb.set(++id, {nom: "Alice"}) // voici comment set une nouvelle entrée.
@@ -33,6 +36,7 @@ const server = http.createServer( (req , res) => {
                 data = JSON.parse(data); 
                 memoryDb.set(++id, data);
 
+                res.writeHead(201);
                 res.end();
             });
 
@@ -54,8 +58,8 @@ const server = http.createServer( (req , res) => {
                 }
     
                 else { // Si l'utilisateur n'existe pas
-                    res.write("<h1>Cet utilisateur n'existe pas</h1>");
                     res.writeHead(404, { 'content-type': "text/html" });
+                    res.write("<h1>Cet utilisateur n'existe pas</h1>");
                 }
             }
             else{ // Si aucun id n'a été entré
@@ -65,6 +69,26 @@ const server = http.createServer( (req , res) => {
             
         }
 
+        if (req.method === "DELETE") {
+            const arrayReq = req.url.split("/");
+            const id = parseInt(arrayReq[arrayReq.length - 1]);
+
+            if (id) {
+                if (memoryDb.has(id) != null) {
+                    memoryDb.delete(id);
+                }
+
+                else { // Si l'utilisateur n'existe pas
+                    res.writeHead(404, { 'content-type': "text/html" });
+                    res.write("<h1>Cet utilisateur n'existe pas</h1>");
+                }
+            }
+
+            else { // Si aucun id n'a été entré
+                res.writeHead(404, { 'content-type': "text/html" });
+                res.write("<h1>Cet utilisateur n'existe pas</h1>");
+            }
+        }
     }
 
     res.end();
