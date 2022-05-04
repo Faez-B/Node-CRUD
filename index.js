@@ -27,10 +27,15 @@ const server = http.createServer( (req , res) => {
         const id = parseInt(arrayReq[arrayReq.length - 1]);
 
         // console.log(id, typeof id);
-
-        // console.log(JSON.stringify(memoryDb.get(id)), typeof JSON.stringify(memoryDb.get(id)));
-        res.writeHead(200, { 'content-type': "application/json" });
-        res.write(JSON.stringify(memoryDb.get(id)));
+        if (id) {
+            // console.log(JSON.stringify(memoryDb.get(id)), typeof JSON.stringify(memoryDb.get(id)));
+            res.writeHead(200, { 'content-type': "application/json" });
+            res.write(JSON.stringify(memoryDb.get(id)));
+        }
+        else{
+            res.writeHead(200, { 'content-type': "text/html" });
+            res.write("<h1>Cet utilisateur n'existe pas</h1>");
+        }
 
     }
 
